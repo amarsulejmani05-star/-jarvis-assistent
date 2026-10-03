@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jarvis</title>
+<style>
+body {
+  margin: 0;
+  background: #050b12;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+h1 {
+  margin-top: 80px;
+  font-size: 45px;
+}
+#status {
+  margin: 30px;
+  color: #00d9ff;
+}
+button {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid #00d9ff;
+  background: #07131f;
+  color: white;
+  font-size: 40px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>JARVIS</h1>
+<div id="status">Bereit.</div>
+
+<button onclick="startJarvis()">🎤</button>
+
+<script>
+function startJarvis() {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    document.getElementById("status").innerText =
+      "Spracherkennung wird nicht unterstützt.";
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = "de-DE";
+
+  document.getElementById("status").innerText =
+    "Ich höre zu...";
+
+  recognition.start();
+
+  recognition.onresult = function(event) {
+    const text = event.results[0][0].transcript;
+
+    document.getElementById("status").innerText =
+      "Du: " + text;
+
+    const speech = new SpeechSynthesisUtterance(
+      "Ich habe dich verstanden: " + text
+    );
+
+    speech.lang = "de-DE";
+    speechSynthesis.speak(speech);
+  };
+}
+</script>
+
+</body>
+</html>
