@@ -76,3 +76,8 @@ function startJarvis() {
 
 </body>
 </html>
+const speech = new SpeechSynthesisUtterance(
+  "Ich habe dich verstanden: " + text
+);
+speech.lang = "de-DE";
+speechSynthesis.speak(speech);
