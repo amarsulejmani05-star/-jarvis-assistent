@@ -17,21 +17,27 @@ body {
 h1 {
   margin-top: 80px;
   font-size: 45px;
+  letter-spacing: 5px;
 }
 
 #status {
   margin: 30px;
   color: #00d9ff;
+  min-height: 25px;
 }
 
 button {
-  width: 100px;
-  height: 100px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   border: 2px solid #00d9ff;
   background: #07131f;
   color: white;
-  font-size: 40px;
+  font-size: 45px;
+}
+
+button:active {
+  transform: scale(0.95);
 }
 </style>
 </head>
@@ -45,6 +51,24 @@ button {
 <button onclick="startJarvis()">🎤</button>
 
 <script>
+
+function speak(text) {
+
+  window.speechSynthesis.cancel();
+
+  const voice = new SpeechSynthesisUtterance(text);
+
+  voice.lang = "de-DE";
+  voice.volume = 1;
+  voice.rate = 1;
+  voice.pitch = 1;
+
+  setTimeout(function() {
+    window.speechSynthesis.speak(voice);
+  }, 200);
+}
+
+
 function startJarvis() {
 
   const SpeechRecognition =
@@ -52,8 +76,12 @@ function startJarvis() {
     window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
+
     document.getElementById("status").innerText =
       "Spracherkennung wird nicht unterstützt.";
+
+    speak("Die Spracherkennung wird auf diesem Gerät nicht unterstützt.");
+
     return;
   }
 
@@ -68,31 +96,28 @@ function startJarvis() {
 
   recognition.start();
 
+
   recognition.onresult = function(event) {
 
-    const text = event.results[0][0].transcript;
+    const text =
+      event.results[0][0].transcript;
 
     document.getElementById("status").innerText =
       "Du: " + text;
 
-    const speech =
-      new SpeechSynthesisUtterance(
-        "Ich habe dich verstanden: " + text
-      );
-
-    speech.lang = "de-DE";
-    speech.rate = 1;
-    speech.pitch = 1;
-
-    speechSynthesis.cancel();
-    speechSynthesis.speak(speech);
+    speak("Ich habe dich verstanden. " + text);
   };
 
-  recognition.onerror = function() {
+
+  recognition.onerror = function(event) {
+
     document.getElementById("status").innerText =
-      "Etwas ist schiefgelaufen.";
+      "Fehler: " + event.error;
+
   };
+
 }
+
 </script>
 
 </body>
